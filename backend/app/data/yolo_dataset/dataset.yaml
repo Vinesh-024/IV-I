@@ -1,0 +1,25 @@
+names:
+  0: Melanoma
+  1: Basal_Cell_Carcinoma
+  2: Eczema
+  3: Psoriasis
+  4: Conjunctivitis
+  5: Stye
+  6: Blepharitis
+  7: Paronychia
+  8: Finger_Fracture
+  9: Cut_Laceration
+  10: Onychomycosis
+  11: Diabetic_Ulcer
+  12: Pressure_Ulcer
+  13: Surgical_Incision
+  14: Burn_Wound
+  15: Pneumonia
+  16: Atelectasis
+  17: Pleural_Effusion
+  18: Brain_Tumor
+  19: Brain_Hemorrhage
+  20: Spine_Herniated_Disc
+path: C:\Users\hrush\Documents\IV-I\backend\app\data\yolo_dataset
+train: images/train
+val: images/val

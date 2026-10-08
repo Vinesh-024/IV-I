@@ -1,0 +1,5 @@
+#!/bin/bash
+MESSAGE="${1:-Update}"
+git add .
+git commit -m "$MESSAGE"
+git push

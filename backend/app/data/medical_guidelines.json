@@ -1,0 +1,34 @@
+[
+  {
+    "condition": "Melanoma / Skin Cancer",
+    "text": "Clinical Guidelines for Melanoma: Immediate dermatologist referral required. Check lesion borders (Asymmetric, Border irregular, Color variegated, Diameter >6mm - ABCD criteria). Biopsy is gold standard. Management: Surgical excision, staging sentinel node biopsy. Keep lesion dry, avoid sun exposure, apply SPF 50+."
+  },
+  {
+    "condition": "Eczema / Dermatitis",
+    "text": "Clinical Guidelines for Atopic Dermatitis/Eczema: Maintain skin hydration. Use emollients daily. Topical corticosteroids (e.g. hydrocortisone) for flare-ups. Avoid harsh soaps, fragrances, and hot showers. Manage itch with oral antihistamines."
+  },
+  {
+    "condition": "Pneumonia",
+    "text": "Clinical Guidelines for Pneumonia: Assess severity using CURB-65 criteria (Confusion, Urea, Respiratory rate, Blood pressure, Age >= 65). Administer empirical antibiotics (e.g. Amoxicillin or Azithromycin). Rest, hydration, and bronchodilators for dyspnea. Monitor oxygen saturation. Repeat chest X-ray in 6 weeks."
+  },
+  {
+    "condition": "Second-Degree Burn",
+    "text": "Clinical Guidelines for Moderate Burns (Second-Degree): Clean with mild soap and cool water. Apply silver sulfadiazine or antibiotic ointment. Cover with sterile non-adherent dressing. Daily dressing changes. Do not pop blisters. Manage pain with NSAIDs. Specialist consult for joints or face."
+  },
+  {
+    "condition": "Finger Fracture / Bone Fracture",
+    "text": "Clinical Guidelines for Fractures: Immobilize joint above and below the fracture (splint/cast). RICE protocol (Rest, Ice, Compression, Elevation). Refer to orthopedics for reduction and alignment. Monitor distal pulses and sensation (capillary refill check)."
+  },
+  {
+    "condition": "Conjunctivitis",
+    "text": "Clinical Guidelines for Conjunctivitis (Pink Eye): Viral cases are self-limiting; use artificial tears, cold compresses. Bacterial cases require antibiotic drops (e.g., Polymyxin/Trimethoprim). Avoid contact lens wear. Hand hygiene to prevent transmission."
+  },
+  {
+    "condition": "Paronychia / Nail Infection",
+    "text": "Clinical Guidelines for Paronychia: Warm water soaks 3-4 times daily. If early/mild, topical mupirocin ointment is indicated. For fluctuant abscess, perform simple incision and drainage. Oral antibiotics (Cephalexin) if cellulitis is present."
+  },
+  {
+    "condition": "Pressure Ulcer / Wound",
+    "text": "Clinical Guidelines for Pressure Ulcers: Offload pressure (repositioning every 2 hours). Keep wound bed moist and clean. Debride necrotic tissue if needed. Apply hydrocolloid or alginate dressings. Ensure high-protein nutrition."
+  }
+]
