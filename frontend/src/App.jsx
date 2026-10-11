@@ -24,7 +24,13 @@ function App() {
   const [chatQuery, setChatQuery] = useState('');
   const [chatMessages, setChatMessages] = useState([]);
   const [chatLoading, setChatLoading] = useState(false);
-  const [showMask, setShowMask] = useState(true);
+  // Phase 2: 3-state image viewer — 'original' | 'mask' | 'heatmap'
+  const [imageView, setImageView] = useState('mask');
+  // Phase 2: History search filter
+  const [historySearch, setHistorySearch] = useState('');
+  const [severityFilter, setSeverityFilter] = useState('all');
+  // Keep showMask alias for backwards compat
+  const showMask = imageView === 'mask';
   
   // Interactive UI effects state
   const [scrollPercent, setScrollPercent] = useState(0);
@@ -512,33 +518,64 @@ function App() {
                               alt="Scan Preview" 
                               className="visualizer-image"
                             />
-                            {showMask && currentCase.mask_filename && (
-                              <img 
-                                src={`${UPLOADS_BASE}/${currentCase.mask_filename}`} 
-                                alt="SAM 2 Mask" 
+                            {/* Phase 2: 3-way overlay rendering */}
+                            {imageView === 'mask' && currentCase.mask_filename && (
+                              <img
+                                src={`${UPLOADS_BASE}/${currentCase.mask_filename}`}
+                                alt="SAM 2 Segmentation Mask"
                                 className="visualizer-mask"
                               />
                             )}
-                            {showMask && currentCase.bbox && currentCase.bbox.length === 4 && (
-                              <div 
-                                className="visualizer-box" 
+                            {imageView === 'heatmap' && currentCase.gradcam_filename && (
+                              <img
+                                src={`${UPLOADS_BASE}/${currentCase.gradcam_filename}`}
+                                alt="AI Explainability Heatmap"
+                                className="visualizer-mask"
+                                style={{ opacity: 0.90 }}
+                              />
+                            )}
+                            {imageView === 'mask' && currentCase.bbox && currentCase.bbox.length === 4 && (
+                              <div
+                                className="visualizer-box"
                                 style={getBBoxStyle(currentCase.bbox)}
                                 data-label={`${currentCase.disease} (${(currentCase.confidence * 100).toFixed(0)}%)`}
                               />
                             )}
                           </div>
 
-                          {/* Mask Toggle */}
-                          <div className="toggle-container">
-                            <span style={{fontSize: '14px', fontWeight: '600'}}>Overlay Segmentations (SAM 2)</span>
-                            <label className="switch">
-                              <input 
-                                type="checkbox" 
-                                checked={showMask} 
-                                onChange={(e) => setShowMask(e.target.checked)} 
-                              />
-                              <span className="slider"></span>
-                            </label>
+                          {/* Phase 2: 3-way Image Mode Switcher */}
+                          <div className="toggle-container" style={{flexWrap: 'wrap', gap: '8px'}}>
+                            <span style={{fontSize: '14px', fontWeight: '600', minWidth: '120px'}}>Image View Mode</span>
+                            <div style={{display: 'flex', gap: '6px', flexWrap: 'wrap'}}>
+                              {[
+                                { key: 'original', label: 'Original' },
+                                { key: 'mask',     label: 'SAM Mask' },
+                                { key: 'heatmap',  label: '🔥 AI Heatmap' },
+                              ].map(opt => (
+                                <button
+                                  key={opt.key}
+                                  onClick={() => setImageView(opt.key)}
+                                  style={{
+                                    padding: '6px 14px',
+                                    borderRadius: '8px',
+                                    border: imageView === opt.key ? '2px solid var(--primary)' : '2px solid rgba(255,255,255,0.15)',
+                                    background: imageView === opt.key ? 'rgba(14,165,233,0.2)' : 'rgba(255,255,255,0.05)',
+                                    color: imageView === opt.key ? 'var(--primary)' : 'var(--text-muted)',
+                                    fontWeight: imageView === opt.key ? '700' : '500',
+                                    fontSize: '13px',
+                                    cursor: 'pointer',
+                                    transition: 'all 0.2s'
+                                  }}
+                                >
+                                  {opt.label}
+                                </button>
+                              ))}
+                            </div>
+                            {imageView === 'heatmap' && !currentCase.gradcam_filename && (
+                              <span style={{fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px', width: '100%'}}>
+                                ⚠ Heatmap not available for this case (grad-cam library may not be installed).
+                              </span>
+                            )}
                           </div>
 
                           {/* Metrics Grid */}
@@ -644,12 +681,51 @@ function App() {
                 </header>
 
                 <div className="glass-panel" style={{padding: '40px'}}>
-                  <h3 className="form-title">Archived Diagnostics Database</h3>
-                  {reportsHistory.length === 0 ? (
-                    <p style={{color: 'var(--text-muted)', padding: '20px 0'}}>No records found in database.</p>
-                  ) : (
+                  {/* Phase 2: Search + Filter Bar */}
+                  <div style={{display: 'flex', gap: '12px', marginBottom: '24px', flexWrap: 'wrap', alignItems: 'center'}}>
+                    <h3 className="form-title" style={{margin: 0, flex: '1 1 200px'}}>Archived Diagnostics Database</h3>
+                    <input
+                      type="text"
+                      placeholder="Search patient name, disease..."
+                      value={historySearch}
+                      onChange={e => setHistorySearch(e.target.value)}
+                      style={{
+                        flex: '1 1 200px', padding: '8px 14px', borderRadius: '10px',
+                        background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)',
+                        color: 'var(--text-light)', fontSize: '13px', outline: 'none'
+                      }}
+                    />
+                    <select
+                      value={severityFilter}
+                      onChange={e => setSeverityFilter(e.target.value)}
+                      style={{
+                        padding: '8px 14px', borderRadius: '10px',
+                        background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)',
+                        color: 'var(--text-light)', fontSize: '13px', cursor: 'pointer'
+                      }}
+                    >
+                      <option value="all">All Severities</option>
+                      <option value="mild">Mild</option>
+                      <option value="moderate">Moderate</option>
+                      <option value="severe">Severe</option>
+                    </select>
+                  </div>
+                  {(() => {
+                    const q = historySearch.toLowerCase();
+                    const filtered = reportsHistory.filter(rep => {
+                      const matchSearch = !q ||
+                        (rep.patient_name || '').toLowerCase().includes(q) ||
+                        (rep.disease || '').toLowerCase().includes(q) ||
+                        (rep.body_part_scan_type || '').toLowerCase().includes(q);
+                      const matchSeverity = severityFilter === 'all' ||
+                        (rep.severity || '').toLowerCase() === severityFilter;
+                      return matchSearch && matchSeverity;
+                    });
+                    return filtered.length === 0 ? (
+                      <p style={{color: 'var(--text-muted)', padding: '20px 0'}}>No records match your search.</p>
+                    ) : (
                     <div className="report-list">
-                      {reportsHistory.map((rep) => (
+                      {filtered.map((rep) => (
                         <div key={rep.id} className="glass-panel report-item" style={{background: 'rgba(255,255,255,0.01)'}}>
                           <div className="report-meta">
                             <span className="report-title-text">{rep.patient_name} (Age {rep.patient_age}, {rep.patient_sex})</span>
@@ -683,7 +759,8 @@ function App() {
                         </div>
                       ))}
                     </div>
-                  )}
+                    );
+                  })()}
                 </div>
               </div>
             )}

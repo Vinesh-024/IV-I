@@ -1,0 +1,103 @@
+{
+  "per_class": {
+    "Basal_Cell_Carcinoma": {
+      "precision": 0.8,
+      "recall": 0.7273,
+      "f1": 0.7619,
+      "support": 22,
+      "tp": 16,
+      "fp": 4,
+      "fn": 6,
+      "tn": 226
+    },
+    "Cheilitis": {
+      "precision": 0.8947,
+      "recall": 0.9444,
+      "f1": 0.9189,
+      "support": 18,
+      "tp": 17,
+      "fp": 2,
+      "fn": 1,
+      "tn": 232
+    },
+    "Eczema": {
+      "precision": 0.6222,
+      "recall": 0.7,
+      "f1": 0.6588,
+      "support": 40,
+      "tp": 28,
+      "fp": 17,
+      "fn": 12,
+      "tn": 195
+    },
+    "Healthy_Skin": {
+      "precision": 0.9565,
+      "recall": 1.0,
+      "f1": 0.9778,
+      "support": 22,
+      "tp": 22,
+      "fp": 1,
+      "fn": 0,
+      "tn": 229
+    },
+    "Melanoma": {
+      "precision": 0.8261,
+      "recall": 0.8261,
+      "f1": 0.8261,
+      "support": 23,
+      "tp": 19,
+      "fp": 4,
+      "fn": 4,
+      "tn": 225
+    },
+    "Nail_Psoriasis": {
+      "precision": 0.7619,
+      "recall": 0.6667,
+      "f1": 0.7111,
+      "support": 24,
+      "tp": 16,
+      "fp": 5,
+      "fn": 8,
+      "tn": 223
+    },
+    "Onychomycosis": {
+      "precision": 0.775,
+      "recall": 0.8158,
+      "f1": 0.7949,
+      "support": 38,
+      "tp": 31,
+      "fp": 9,
+      "fn": 7,
+      "tn": 205
+    },
+    "Oral_Thrush": {
+      "precision": 1.0,
+      "recall": 0.9714,
+      "f1": 0.9855,
+      "support": 35,
+      "tp": 34,
+      "fp": 0,
+      "fn": 1,
+      "tn": 217
+    },
+    "Psoriasis": {
+      "precision": 0.5926,
+      "recall": 0.5333,
+      "f1": 0.5614,
+      "support": 30,
+      "tp": 16,
+      "fp": 11,
+      "fn": 14,
+      "tn": 211
+    }
+  },
+  "macro": {
+    "accuracy": 0.7897,
+    "macro_precision": 0.8032,
+    "macro_recall": 0.7983,
+    "macro_f1": 0.7996
+  },
+  "errors": 0,
+  "test_size": 252,
+  "timestamp": "2026-10-11T12:29:59.825645"
+}

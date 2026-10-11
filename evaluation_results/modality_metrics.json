@@ -1,0 +1,33 @@
+{
+  "per_class": {
+    "Scan": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 259,
+      "tp": 259,
+      "fp": 0,
+      "fn": 0,
+      "tn": 252
+    },
+    "RGB": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 252,
+      "tp": 252,
+      "fp": 0,
+      "fn": 0,
+      "tn": 259
+    }
+  },
+  "macro": {
+    "accuracy": 1.0,
+    "macro_precision": 1.0,
+    "macro_recall": 1.0,
+    "macro_f1": 1.0
+  },
+  "errors": 0,
+  "test_size": 511,
+  "timestamp": "2026-10-11T12:29:00.543754"
+}

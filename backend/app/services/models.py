@@ -183,7 +183,12 @@ class BiomedCLIPService:
                 logger.info(f"Loaded BiomedCLIP class configuration list: {self.rgb_classes}")
             except Exception as e:
                 logger.error(f"Failed to parse classes JSON: {e}")
-                self.rgb_classes = ["Melanoma", "Basal_Cell_Carcinoma", "Eczema", "Psoriasis", "Cheilitis", "Oral_Thrush", "Nail_Infection", "Healthy_Skin"]
+                self.rgb_classes = [
+                    "Melanoma", "Basal_Cell_Carcinoma", "Eczema", "Psoriasis", 
+                    "Cheilitis", "Oral_Thrush", 
+                    # "Nail_Infection",  # Temporarily kept aside (empty folder / 0 training samples; covered by Onychomycosis & Nail_Psoriasis)
+                    "Healthy_Skin"
+                ]
         else:
             dataset_dir = os.path.join(
                 os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 
@@ -191,9 +196,19 @@ class BiomedCLIPService:
             )
             rgb_base = os.path.join(dataset_dir, "RGB")
             if os.path.exists(rgb_base):
-                self.rgb_classes = sorted([d for d in os.listdir(rgb_base) if os.path.isdir(os.path.join(rgb_base, d))])
+                # Temporarily discard Nail_Infection or empty/hidden dirs
+                discarded = {"Nail_Infection"}  # Kept aside; preserved in codebase
+                self.rgb_classes = sorted([
+                    d for d in os.listdir(rgb_base) 
+                    if os.path.isdir(os.path.join(rgb_base, d)) and d not in discarded and not d.startswith(('_', '.'))
+                ])
             else:
-                self.rgb_classes = ["Melanoma", "Basal_Cell_Carcinoma", "Eczema", "Psoriasis", "Cheilitis", "Oral_Thrush", "Nail_Infection", "Healthy_Skin"]
+                self.rgb_classes = [
+                    "Melanoma", "Basal_Cell_Carcinoma", "Eczema", "Psoriasis", 
+                    "Cheilitis", "Oral_Thrush", 
+                    # "Nail_Infection",  # Temporarily kept aside
+                    "Healthy_Skin"
+                ]
         
         # Load foundation encoder
         if TORCH_AVAILABLE and OPEN_CLIP_AVAILABLE:
@@ -237,7 +252,16 @@ class BiomedCLIPService:
                     features /= features.norm(dim=-1, keepdim=True)
                     
                     # 2. Pass through Supervised Linear Head
-                    logits = self.head(features).softmax(dim=-1)
+                    logits_raw = self.head(features)
+                    
+                    # Temporarily discard Nail_Infection logit if present in active class weights
+                    # (keeps it aside so it is never falsely predicted over actual classes)
+                    for discarded in ["Nail_Infection"]:
+                        if discarded in self.rgb_classes:
+                            d_idx = self.rgb_classes.index(discarded)
+                            logits_raw[:, d_idx] = -float("inf")
+                            
+                    logits = logits_raw.softmax(dim=-1)
                     pred_idx = logits.argmax(dim=1).item()
                     confidence = float(logits[0, pred_idx].item())
                     
@@ -256,13 +280,15 @@ class BiomedCLIPService:
                     body_part, disease = "Skin", "Melanoma"
                 elif "eczema" in pred_lower:
                     body_part, disease = "Skin", "Eczema"
+                elif "nail_psoriasis" in pred_lower:
+                    body_part, disease = "Nail", "Nail Psoriasis"
                 elif "psoriasis" in pred_lower:
                     body_part, disease = "Skin", "Psoriasis"
                 elif "cheilitis" in pred_lower or "lips" in pred_lower:
                     body_part, disease = "Lips", "Cheilitis"
                 elif "thrush" in pred_lower or "oral" in pred_lower or "tongue" in pred_lower:
                     body_part, disease = "Tongue", "Oral Candidiasis (Thrush)"
-                elif "nail" in pred_lower or "fungus" in pred_lower:
+                elif "onychomycosis" in pred_lower or "nail" in pred_lower or "fungus" in pred_lower:
                     body_part, disease = "Nail", "Onychomycosis (Fungal)"
                 elif "eye" in pred_lower or "conjunctivitis" in pred_lower:
                     body_part, disease = "Eye", "Conjunctivitis"
@@ -273,7 +299,8 @@ class BiomedCLIPService:
                 return {
                     "body_part_scan_type": body_part,
                     "disease": disease,
-                    "confidence": confidence
+                    "confidence": confidence,
+                    "raw_class": predicted_class
                 }
             except Exception as e:
                 logger.error(f"BiomedCLIP Supervised prediction failed: {e}. Falling back to zero-shot.")
@@ -432,20 +459,21 @@ class RadDINOService:
                     scan_type, disease = "Chest X-ray", "Pneumonia"
                 elif "atelectasis" in pred_lower:
                     scan_type, disease = "Chest X-ray", "Atelectasis"
-                elif "tumor" in pred_lower or "brain" in pred_lower:
-                    scan_type, disease = "Brain MRI", "Glioma / Brain Tumor"
                 elif "hemorrhage" in pred_lower:
-                    scan_type, disease = "Brain MRI", "Hemorrhage"
+                    scan_type, disease = "Brain MRI", "Brain Hemorrhage"
+                elif "tumor" in pred_lower or "glioma" in pred_lower or "brain" in pred_lower:
+                    scan_type, disease = "Brain MRI", "Glioma / Brain Tumor"
                 elif "spine" in pred_lower or "disc" in pred_lower:
                     scan_type, disease = "MRI Spine", "Herniated Disc"
                 elif "normal" in pred_lower:
-                    scan_type, disease = "Chest X-ray", "Normal Chest"
+                    scan_type, disease = "Chest X-ray", "Normal Scan"
                 elif "fracture" in pred_lower or "bone" in pred_lower:
                     scan_type, disease = "Bone X-ray", "Bone Fracture"
                 return {
                     "body_part_scan_type": scan_type,
                     "disease": disease,
-                    "confidence": confidence
+                    "confidence": confidence,
+                    "raw_class": predicted_class
                 }
             except Exception as e:
                 logger.error(f"DINOv2 Supervised prediction failed: {e}. Falling back to default heuristics.")

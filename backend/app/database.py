@@ -35,7 +35,7 @@ async def init_db():
 def init_fallback_sqlite():
     conn = sqlite3.connect(FALLBACK_DB_PATH)
     cursor = conn.cursor()
-    # Create patient_reports table
+    # patient_reports table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS patient_reports (
             id TEXT PRIMARY KEY,
@@ -53,6 +53,20 @@ def init_fallback_sqlite():
             specialist TEXT,
             report_text TEXT,
             rag_suggestions TEXT,
+            mask_filename TEXT,
+            gradcam_filename TEXT,
+            created_at TEXT
+        )
+    """)
+    # users table (Phase 2 auth)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id TEXT PRIMARY KEY,
+            full_name TEXT,
+            email TEXT UNIQUE,
+            hashed_password TEXT,
+            clinic_name TEXT,
+            role TEXT,
             created_at TEXT
         )
     """)
@@ -83,8 +97,9 @@ async def save_report(report_data: dict) -> str:
             INSERT OR REPLACE INTO patient_reports (
                 id, patient_name, patient_age, patient_sex, symptoms, medical_history,
                 image_filename, modality, body_part_scan_type, disease, confidence,
-                severity, specialist, report_text, rag_suggestions, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                severity, specialist, report_text, rag_suggestions,
+                mask_filename, gradcam_filename, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             report_id,
             report_data.get("patient_name"),
@@ -101,6 +116,8 @@ async def save_report(report_data: dict) -> str:
             report_data.get("specialist"),
             report_data.get("report_text"),
             json.dumps(report_data.get("rag_suggestions", [])),
+            report_data.get("mask_filename", ""),
+            report_data.get("gradcam_filename", ""),
             report_data.get("created_at", datetime.now().isoformat())
         ))
         conn.commit()
@@ -156,3 +173,68 @@ async def get_report_by_id(report_id: str) -> dict:
                 report["rag_suggestions"] = []
             return report
         return None
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Phase 2 — User / Auth CRUD
+# ─────────────────────────────────────────────────────────────────────────────
+
+async def create_user(user_data: dict) -> str:
+    user_id = user_data.get("id")
+    if not use_fallback_db:
+        collection = db["users"]
+        await collection.insert_one(dict(user_data))
+    else:
+        conn = sqlite3.connect(FALLBACK_DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT OR IGNORE INTO users
+                (id, full_name, email, hashed_password, clinic_name, role, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (
+            user_id,
+            user_data.get("full_name"),
+            user_data.get("email"),
+            user_data.get("hashed_password"),
+            user_data.get("clinic_name", ""),
+            user_data.get("role", "Doctor"),
+            user_data.get("created_at", datetime.now().isoformat())
+        ))
+        conn.commit()
+        conn.close()
+    return user_id
+
+
+async def get_user_by_email(email: str) -> dict:
+    email = email.lower().strip()
+    if not use_fallback_db:
+        collection = db["users"]
+        doc = await collection.find_one({"email": email})
+        if doc and "_id" in doc:
+            doc["_id"] = str(doc["_id"])
+        return doc
+    else:
+        conn = sqlite3.connect(FALLBACK_DB_PATH)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+        row = cursor.fetchone()
+        conn.close()
+        return dict(row) if row else None
+
+
+async def get_user_by_id(user_id: str) -> dict:
+    if not use_fallback_db:
+        collection = db["users"]
+        doc = await collection.find_one({"id": user_id})
+        if doc and "_id" in doc:
+            doc["_id"] = str(doc["_id"])
+        return doc
+    else:
+        conn = sqlite3.connect(FALLBACK_DB_PATH)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+        row = cursor.fetchone()
+        conn.close()
+        return dict(row) if row else None

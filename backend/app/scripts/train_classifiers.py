@@ -53,7 +53,12 @@ def create_directory_structure():
     """
     Creates separate folder paths for Scan and RGB training classes.
     """
-    rgb_classes = ["Melanoma", "Basal_Cell_Carcinoma", "Eczema", "Psoriasis", "Cheilitis", "Oral_Thrush", "Nail_Infection", "Healthy_Skin"]
+    rgb_classes = [
+        "Melanoma", "Basal_Cell_Carcinoma", "Eczema", "Psoriasis", 
+        "Cheilitis", "Oral_Thrush", 
+        # "Nail_Infection",  # Temporarily kept aside (empty folder / 0 images; covered by Onychomycosis & Nail_Psoriasis)
+        "Healthy_Skin"
+    ]
     scan_classes = ["Pneumonia", "Atelectasis", "Brain_Tumor", "Brain_Hemorrhage", "Spine_Herniated_Disc", "Normal_Scan"]
     
     rgb_dir = os.path.join(DATA_DIR, "RGB")
@@ -73,16 +78,37 @@ def create_directory_structure():
 def get_image_paths_and_labels(base_path):
     """
     Reads image paths and maps them to numeric labels.
+    Filters out temporarily discarded classes and empty folders.
     """
+    # Classes temporarily discarded / kept aside (preserved in codebase, but skipped during training)
+    TEMPORARILY_DISCARDED_CLASSES = {
+        "Nail_Infection",  # Kept aside: empty folder (0 images); specific nail conditions handled by Onychomycosis & Nail_Psoriasis
+    }
+
     image_paths = []
     labels = []
-    classes = sorted(os.listdir(base_path))
+    
+    candidate_classes = sorted([
+        cls for cls in os.listdir(base_path)
+        if os.path.isdir(os.path.join(base_path, cls))
+        and cls not in TEMPORARILY_DISCARDED_CLASSES
+        and not cls.startswith(('_', '.'))
+    ])
+    
+    # Filter out any directory that has 0 valid image files
+    classes = []
+    for cls in candidate_classes:
+        cls_dir = os.path.join(base_path, cls)
+        has_imgs = any(fname.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')) for fname in os.listdir(cls_dir))
+        if has_imgs:
+            classes.append(cls)
+        else:
+            print(f"  [NOTE] Skipping empty or discarded folder: '{cls}' (0 valid images)")
+
     class_to_idx = {cls: idx for idx, cls in enumerate(classes)}
     
     for cls in classes:
         cls_dir = os.path.join(base_path, cls)
-        if not os.path.isdir(cls_dir):
-            continue
         for fname in os.listdir(cls_dir):
             if fname.lower().endswith(('.png', '.jpg', '.jpeg', '.webp')):
                 image_paths.append(os.path.join(cls_dir, fname))
@@ -91,44 +117,134 @@ def get_image_paths_and_labels(base_path):
     return image_paths, labels, classes
 
 
-def train_head(x_train, y_train, input_dim, num_classes, model_out_path):
+def train_head(x_train, y_train, input_dim, num_classes, model_out_path, val_split=0.2, seed=42):
     """
-    Trains a linear probe head using PyTorch.
+    Trains a linear probe head with a stratified train/val split.
+    Tracks both training and validation accuracy per epoch.
+    Saves best weights based on validation accuracy (not training accuracy).
+    Applies early stopping to prevent overfitting.
     """
+    import json, random
+    from collections import defaultdict
+
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    dataset = SupervisedDataset(x_train, y_train)
-    loader = DataLoader(dataset, batch_size=16, shuffle=True)
-    
+
+    # ── Stratified 80/20 split ──────────────────────────────────────────────
+    rng = random.Random(seed)
+    by_class = defaultdict(list)
+    for i, label in enumerate(y_train):
+        by_class[label].append(i)
+
+    train_idx, val_idx = [], []
+    for cls_indices in by_class.values():
+        rng.shuffle(cls_indices)
+        n_val = max(1, int(len(cls_indices) * val_split))
+        val_idx.extend(cls_indices[:n_val])
+        train_idx.extend(cls_indices[n_val:])
+
+    x_arr = np.array(x_train)
+    y_arr = np.array(y_train)
+
+    train_dataset = SupervisedDataset(x_arr[train_idx], y_arr[train_idx])
+    val_dataset   = SupervisedDataset(x_arr[val_idx],   y_arr[val_idx])
+    train_loader  = DataLoader(train_dataset, batch_size=16, shuffle=True)
+    val_loader    = DataLoader(val_dataset,   batch_size=16, shuffle=False)
+
+    print(f"  Train: {len(train_dataset)} samples | Val: {len(val_dataset)} samples | Classes: {num_classes}")
+
     model = LinearProbeClassifier(input_dim, num_classes).to(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
-    
-    epochs = 25
-    print(f"Training Linear Probe Classifier ({input_dim} -> {num_classes}) on {device}...")
-    
+    optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-4)
+    scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5)
+
+    epochs        = 40   # More epochs — early stopping will cut it short if needed
+    patience      = 7    # Early stopping patience
+    best_val_acc  = 0.0
+    no_improve    = 0
+    history       = []
+
+    print(f"Training LinearProbe ({input_dim} → {num_classes}) on {device}")
+    print(f"  {'Epoch':<8} {'Train Loss':<14} {'Train Acc':<14} {'Val Acc':<12} {'Status'}")
+    print(f"  {'─'*60}")
+
     for epoch in range(epochs):
+        # ── Training pass ──────────────────────────────────────
         model.train()
-        epoch_loss = 0.0
-        correct = 0
-        total = 0
-        for batch_x, batch_y in loader:
+        t_loss, t_correct, t_total = 0.0, 0, 0
+        for batch_x, batch_y in train_loader:
             batch_x, batch_y = batch_x.to(device), batch_y.to(device)
             optimizer.zero_grad()
-            outputs = model(batch_x)
-            loss = criterion(outputs, batch_y)
+            out  = model(batch_x)
+            loss = criterion(out, batch_y)
             loss.backward()
             optimizer.step()
-            
-            epoch_loss += loss.item() * batch_x.size(0)
-            _, predicted = outputs.max(1)
-            total += batch_y.size(0)
-            correct += predicted.eq(batch_y).sum().item()
-            
-        acc = correct / total
-        print(f"  Epoch {epoch+1}/{epochs} | Loss: {epoch_loss/len(dataset):.4f} | Acc: {acc:.2%}")
-        
-    torch.save(model.state_dict(), model_out_path)
-    print(f"Weights saved successfully to: {model_out_path}\n")
+            t_loss    += loss.item() * batch_x.size(0)
+            _, pred    = out.max(1)
+            t_total   += batch_y.size(0)
+            t_correct += pred.eq(batch_y).sum().item()
+
+        scheduler.step()
+        train_acc  = t_correct / t_total
+        train_loss = t_loss / len(train_dataset)
+
+        # ── Validation pass ────────────────────────────────────
+        model.eval()
+        v_correct, v_total = 0, 0
+        with torch.no_grad():
+            for batch_x, batch_y in val_loader:
+                batch_x, batch_y = batch_x.to(device), batch_y.to(device)
+                out = model(batch_x)
+                _, pred = out.max(1)
+                v_total   += batch_y.size(0)
+                v_correct += pred.eq(batch_y).sum().item()
+        val_acc = v_correct / v_total
+
+        # ── Best model checkpoint ──────────────────────────────
+        status = ""
+        if val_acc > best_val_acc:
+            best_val_acc = val_acc
+            torch.save(model.state_dict(), model_out_path)
+            no_improve = 0
+            status = "✓ saved"
+        else:
+            no_improve += 1
+            gap = train_acc - val_acc
+            if gap > 0.15:
+                status = f"⚠ overfit gap={gap:.1%}"
+            elif train_acc < 0.55:
+                status = "↓ underfit"
+
+        history.append({
+            "epoch":     epoch + 1,
+            "train_loss": round(train_loss, 4),
+            "train_acc":  round(train_acc, 4),
+            "val_acc":    round(val_acc, 4),
+            "gap":        round(train_acc - val_acc, 4)
+        })
+
+        print(f"  {epoch+1:<8} {train_loss:<14.4f} {train_acc:<14.2%} {val_acc:<12.2%} {status}")
+
+        # ── Early stopping ─────────────────────────────────────
+        if no_improve >= patience:
+            print(f"  Early stopping triggered — no val improvement for {patience} epochs.")
+            break
+
+    print(f"\n  Best Val Accuracy : {best_val_acc:.2%}")
+    print(f"  Final Train Acc   : {train_acc:.2%}")
+    gap = train_acc - best_val_acc
+    if gap > 0.15:
+        print(f"  ⚠  OVERFITTING DETECTED: train-val gap = {gap:.2%}")
+    elif best_val_acc < 0.55:
+        print(f"  ↓  UNDERFITTING DETECTED: val accuracy too low ({best_val_acc:.2%})")
+    else:
+        print(f"  ✓  Model appears well-fitted (gap = {gap:.2%})")
+
+    # Save training history JSON alongside the weights
+    history_path = model_out_path.replace(".pth", "_training_history.json")
+    with open(history_path, "w") as f:
+        json.dump({"best_val_acc": round(best_val_acc, 4), "epochs_run": len(history), "history": history}, f, indent=2)
+    print(f"  Training history saved: {history_path}\n")
+    return best_val_acc
 
 
 def generate_synthetic_embeddings(num_samples, feature_dim):

@@ -1,0 +1,40 @@
+======================================================================
+IV-I MEDICAL AI — PHASE 2 FORMAL EVALUATION REPORT
+Generated: 2026-10-11 12:30:23
+======================================================================
+
+1. MODALITY ROUTER (SimpleModalityCNN — Binary: RGB vs Scan)
+   Test samples : 511
+   Accuracy     : 100.00%
+   Macro F1     : 1.0000
+
+2. RGB DISEASE CLASSIFIER (BiomedCLIP ViT-B/16 + LinearProbe — 9 classes)
+   Test samples : 252
+   Accuracy     : 78.97%
+   Macro F1     : 0.7996
+
+   Per-class F1 scores:
+     Basal_Cell_Carcinoma           F1=0.7619  P=0.8000  R=0.7273  (n=22)
+     Cheilitis                      F1=0.9189  P=0.8947  R=0.9444  (n=18)
+     Eczema                         F1=0.6588  P=0.6222  R=0.7000  (n=40)
+     Healthy_Skin                   F1=0.9778  P=0.9565  R=1.0000  (n=22)
+     Melanoma                       F1=0.8261  P=0.8261  R=0.8261  (n=23)
+     Nail_Psoriasis                 F1=0.7111  P=0.7619  R=0.6667  (n=24)
+     Onychomycosis                  F1=0.7949  P=0.7750  R=0.8158  (n=38)
+     Oral_Thrush                    F1=0.9855  P=1.0000  R=0.9714  (n=35)
+     Psoriasis                      F1=0.5614  P=0.5926  R=0.5333  (n=30)
+
+3. SCAN PATHOLOGY CLASSIFIER (DINOv2 ViT-S/14 + LinearProbe — 6 classes)
+   Test samples : 259
+   Accuracy     : 95.75%
+   Macro F1     : 0.9604
+
+   Per-class F1 scores:
+     Atelectasis                    F1=1.0000  P=1.0000  R=1.0000  (n=40)
+     Brain_Hemorrhage               F1=0.9375  P=0.9677  R=0.9091  (n=33)
+     Brain_Tumor                    F1=0.9730  P=1.0000  R=0.9474  (n=38)
+     Normal_Scan                    F1=0.9106  P=0.8889  R=0.9333  (n=60)
+     Pneumonia                      F1=0.9620  P=0.9744  R=0.9500  (n=40)
+     Spine_Herniated_Disc           F1=0.9796  P=0.9600  R=1.0000  (n=48)
+
+======================================================================
