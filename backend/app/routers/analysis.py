@@ -39,8 +39,14 @@ async def upload_and_analyze(
         raise HTTPException(status_code=500, detail=f"Failed to save uploaded image: {e}")
     
     # Run the image and metadata through the AI routing/analysis pipeline
+    # Pass patient demographics so LLM report narrative can be personalised
     try:
-        pipeline_results = await run_pipeline(file_path)
+        pipeline_results = await run_pipeline(
+            file_path,
+            patient_age=patient_age,
+            patient_sex=patient_sex,
+            symptoms=symptoms
+        )
     except Exception as e:
         # Cleanup uploaded image on failure
         if os.path.exists(file_path):
@@ -67,9 +73,10 @@ async def upload_and_analyze(
         # To be filled by RAG step later, or pre-filled with baseline advice
         "rag_suggestions": [],
         "created_at": datetime.now().isoformat(),
-        # Store detection coordinates and mask path for front-end rendering
+        # Store detection coordinates, mask path and explainability heatmap for front-end rendering
         "bbox": pipeline_results.get("bbox", []),
-        "mask_filename": pipeline_results.get("mask_filename", "")
+        "mask_filename": pipeline_results.get("mask_filename", ""),
+        "gradcam_filename": pipeline_results.get("gradcam_filename", "")
     }
     
     # Save report to DB

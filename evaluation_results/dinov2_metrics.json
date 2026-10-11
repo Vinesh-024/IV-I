@@ -1,0 +1,73 @@
+{
+  "per_class": {
+    "Atelectasis": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 40,
+      "tp": 40,
+      "fp": 0,
+      "fn": 0,
+      "tn": 219
+    },
+    "Brain_Hemorrhage": {
+      "precision": 0.9677,
+      "recall": 0.9091,
+      "f1": 0.9375,
+      "support": 33,
+      "tp": 30,
+      "fp": 1,
+      "fn": 3,
+      "tn": 225
+    },
+    "Brain_Tumor": {
+      "precision": 1.0,
+      "recall": 0.9474,
+      "f1": 0.973,
+      "support": 38,
+      "tp": 36,
+      "fp": 0,
+      "fn": 2,
+      "tn": 221
+    },
+    "Normal_Scan": {
+      "precision": 0.8889,
+      "recall": 0.9333,
+      "f1": 0.9106,
+      "support": 60,
+      "tp": 56,
+      "fp": 7,
+      "fn": 4,
+      "tn": 192
+    },
+    "Pneumonia": {
+      "precision": 0.9744,
+      "recall": 0.95,
+      "f1": 0.962,
+      "support": 40,
+      "tp": 38,
+      "fp": 1,
+      "fn": 2,
+      "tn": 218
+    },
+    "Spine_Herniated_Disc": {
+      "precision": 0.96,
+      "recall": 1.0,
+      "f1": 0.9796,
+      "support": 48,
+      "tp": 48,
+      "fp": 2,
+      "fn": 0,
+      "tn": 209
+    }
+  },
+  "macro": {
+    "accuracy": 0.9575,
+    "macro_precision": 0.9652,
+    "macro_recall": 0.9566,
+    "macro_f1": 0.9604
+  },
+  "errors": 0,
+  "test_size": 259,
+  "timestamp": "2026-10-11T12:30:23.782905"
+}

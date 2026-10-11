@@ -22,3 +22,9 @@ build/
 # OS
 .DS_Store
 Thumbs.db
+
+# Runtime Uploads & Databases
+backend/uploads/*
+!backend/uploads/.gitkeep
+*.db
+fallback_medical.db

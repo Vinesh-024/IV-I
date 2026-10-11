@@ -1,34 +1,78 @@
 [
   {
     "condition": "Melanoma / Skin Cancer",
-    "text": "Clinical Guidelines for Melanoma: Immediate dermatologist referral required. Check lesion borders (Asymmetric, Border irregular, Color variegated, Diameter >6mm - ABCD criteria). Biopsy is gold standard. Management: Surgical excision, staging sentinel node biopsy. Keep lesion dry, avoid sun exposure, apply SPF 50+."
+    "text": "Clinical Guidelines for Melanoma: Immediate dermatologist referral required. Check lesion borders using ABCD criteria (Asymmetric, Border irregular, Color variegated, Diameter >6mm). Biopsy is gold standard for diagnosis. Management: Surgical excision with wide margins, staging sentinel node biopsy for deeper lesions. Avoid sun exposure, apply SPF 50+ sunscreen daily. Stage I–II: excision alone; Stage III–IV: adjuvant immunotherapy (pembrolizumab) or targeted therapy (BRAF/MEK inhibitors if BRAF mutation present)."
   },
   {
-    "condition": "Eczema / Dermatitis",
-    "text": "Clinical Guidelines for Atopic Dermatitis/Eczema: Maintain skin hydration. Use emollients daily. Topical corticosteroids (e.g. hydrocortisone) for flare-ups. Avoid harsh soaps, fragrances, and hot showers. Manage itch with oral antihistamines."
+    "condition": "Eczema / Atopic Dermatitis",
+    "text": "Clinical Guidelines for Atopic Dermatitis/Eczema: Maintain skin hydration with fragrance-free emollients applied immediately after bathing. Use topical corticosteroids (e.g. hydrocortisone 1% for mild, betamethasone for moderate) for flare-ups. Avoid harsh soaps, fragrances, hot showers, and known allergen triggers. Manage itch with oral antihistamines (cetirizine). For severe/refractory cases, consider dupilumab (IL-4/IL-13 antagonist) or cyclosporine. Wet wrap therapy may help in acute flares."
   },
   {
-    "condition": "Pneumonia",
-    "text": "Clinical Guidelines for Pneumonia: Assess severity using CURB-65 criteria (Confusion, Urea, Respiratory rate, Blood pressure, Age >= 65). Administer empirical antibiotics (e.g. Amoxicillin or Azithromycin). Rest, hydration, and bronchodilators for dyspnea. Monitor oxygen saturation. Repeat chest X-ray in 6 weeks."
+    "condition": "Psoriasis / Plaque Psoriasis",
+    "text": "Clinical Guidelines for Psoriasis: Apply topical corticosteroids combined with Vitamin D analogues (calcipotriol) as first-line. Salicylic acid ointments help remove scales. Moderate-to-severe cases require phototherapy (narrowband UVB) or systemic agents (methotrexate, cyclosporine). Biologics (adalimumab, secukinumab) for refractory cases. Moisturize daily, avoid trauma to skin (Koebner phenomenon). Monitor for psoriatic arthritis (joint pain, morning stiffness)."
   },
   {
-    "condition": "Second-Degree Burn",
-    "text": "Clinical Guidelines for Moderate Burns (Second-Degree): Clean with mild soap and cool water. Apply silver sulfadiazine or antibiotic ointment. Cover with sterile non-adherent dressing. Daily dressing changes. Do not pop blisters. Manage pain with NSAIDs. Specialist consult for joints or face."
+    "condition": "Basal Cell Carcinoma / BCC",
+    "text": "Clinical Guidelines for Basal Cell Carcinoma: Refer to dermatologist/oncologist promptly. BCC rarely metastasizes but causes local tissue destruction. Standard treatment: Surgical excision with 3–5mm clear margins. Mohs micrographic surgery for high-risk areas (face, periorbital). Topical imiquimod or 5-fluorouracil for superficial BCC. Cryotherapy for small low-risk lesions. Vismodegib (Hedgehog pathway inhibitor) for locally advanced/metastatic BCC. Annual skin surveillance post-treatment."
   },
   {
-    "condition": "Finger Fracture / Bone Fracture",
-    "text": "Clinical Guidelines for Fractures: Immobilize joint above and below the fracture (splint/cast). RICE protocol (Rest, Ice, Compression, Elevation). Refer to orthopedics for reduction and alignment. Monitor distal pulses and sensation (capillary refill check)."
+    "condition": "Cheilitis / Lip Inflammation",
+    "text": "Clinical Guidelines for Cheilitis (Angular and Exfoliative): Angular cheilitis: Rule out nutritional deficiencies (B2, B12, iron, zinc) and Candida/Staphylococcal infection. Apply antifungal (miconazole) or antibiotic (fusidic acid) cream depending on cause. Exfoliative cheilitis: Hydrate lips with petrolatum (Vaseline) multiple times daily. Avoid lip licking and harsh lip products. Check for underlying conditions: Crohn's disease, hypothyroidism, or contact allergy. Oral isotretinoin for refractory exfoliative cheilitis."
   },
   {
-    "condition": "Conjunctivitis",
-    "text": "Clinical Guidelines for Conjunctivitis (Pink Eye): Viral cases are self-limiting; use artificial tears, cold compresses. Bacterial cases require antibiotic drops (e.g., Polymyxin/Trimethoprim). Avoid contact lens wear. Hand hygiene to prevent transmission."
+    "condition": "Oral Thrush / Oral Candidiasis",
+    "text": "Clinical Guidelines for Oral Candidiasis (Thrush): First-line treatment: Nystatin oral suspension (100,000 units/mL), swish-and-swallow 4–5 times daily for 7–14 days. Fluconazole 150mg single dose for immunocompromised patients or nystatin failures. Investigate underlying causes: recent antibiotic use, inhaled corticosteroid use (advise rinse mouth post-inhaler), diabetes, HIV/immunosuppression. Remove and clean dentures daily. Maintain good oral hygiene. Culture and sensitivity if recurrent or azole-resistant suspected."
   },
   {
-    "condition": "Paronychia / Nail Infection",
-    "text": "Clinical Guidelines for Paronychia: Warm water soaks 3-4 times daily. If early/mild, topical mupirocin ointment is indicated. For fluctuant abscess, perform simple incision and drainage. Oral antibiotics (Cephalexin) if cellulitis is present."
+    "condition": "Nail Psoriasis / Onycholysis",
+    "text": "Clinical Guidelines for Nail Psoriasis: Distinguish from onychomycosis (fungal) by clinical exam or KOH prep/culture. Topical: High-potency corticosteroids or calcipotriol applied under nail folds. Intralesional triamcinolone injection for isolated nail disease. Systemic: Methotrexate or biologics (secukinumab, ixekizumab) when associated with psoriatic arthritis. Keep nails trimmed short. Avoid nail trauma and prolonged water exposure. Nail varnish may protect against onycholysis. NAPSI score used to monitor nail involvement."
   },
   {
-    "condition": "Pressure Ulcer / Wound",
-    "text": "Clinical Guidelines for Pressure Ulcers: Offload pressure (repositioning every 2 hours). Keep wound bed moist and clean. Debride necrotic tissue if needed. Apply hydrocolloid or alginate dressings. Ensure high-protein nutrition."
+    "condition": "Onychomycosis / Fungal Nail Infection",
+    "text": "Clinical Guidelines for Onychomycosis: Confirm diagnosis by KOH microscopy or nail culture before treatment. Oral terbinafine (250mg daily, 6 weeks for fingernails, 12 weeks for toenails) is most effective. Itraconazole pulse therapy as alternative. Topical ciclopirox or amorolfine lacquer for mild/superficial cases or patients unable to take systemic therapy. Monitor liver function (LFTs) during oral antifungal therapy. Advise: Keep feet dry, change socks daily, use antifungal foot powder, avoid shared footwear."
+  },
+  {
+    "condition": "Pneumonia / Chest Infection",
+    "text": "Clinical Guidelines for Pneumonia: Assess severity using CURB-65 criteria (Confusion, Urea >7mmol/L, Respiratory rate >30/min, Blood pressure <90/60, Age >=65). Score 0–1: outpatient; Score 2: consider admission; Score >=3: hospital/ICU. Empirical antibiotics: Community-acquired: Amoxicillin 500mg TDS or Azithromycin for atypicals. Inpatient: IV co-amoxiclav + clarithromycin. Rest, adequate hydration, supplemental oxygen if SpO2 <94%. Repeat chest X-ray in 6 weeks post-resolution to exclude underlying malignancy. Influenza and pneumococcal vaccination for prevention."
+  },
+  {
+    "condition": "Atelectasis / Lung Collapse",
+    "text": "Clinical Guidelines for Atelectasis: Identify the underlying cause: mucus plug, foreign body, pleural effusion, or post-operative hypoventilation. Treatment: Deep breathing exercises and incentive spirometry (preventive post-surgery). Chest physiotherapy with percussion and postural drainage. Bronchoscopy to remove obstructing plugs if conservative measures fail. Treat underlying cause: antibiotics for infection, thoracentesis for effusion. N-acetylcysteine for mucus thinning in mucus plug cases. Ambulate early post-surgery to prevent hypostatic atelectasis."
+  },
+  {
+    "condition": "Brain Tumor / Glioma / Intracranial Mass",
+    "text": "Clinical Guidelines for Brain Tumor: Urgent neurosurgery/oncology referral. Establish diagnosis with contrast-enhanced MRI; biopsy for histological grading (WHO Grade I–IV). Glioblastoma (GBM, Grade IV): Maximal safe surgical resection + concurrent temozolomide chemotherapy + radiotherapy (Stupp protocol). Low-grade gliomas: watchful waiting vs. resection depending on eloquent area involvement. Corticosteroids (dexamethasone) to reduce peritumoral edema and symptoms. Monitor for seizures — prophylactic antiepileptics if seizure history. Multidisciplinary team (MDT) review mandatory."
+  },
+  {
+    "condition": "Brain Hemorrhage / Intracranial Bleed",
+    "text": "Clinical Guidelines for Intracranial Hemorrhage: Immediate emergency management. Stabilize ABCs (Airway, Breathing, Circulation). Lower blood pressure gradually (target <140 mmHg SBP). Reverse anticoagulation if applicable (Vitamin K + PCC for warfarin; idarucizumab for dabigatran). Neurosurgical consultation for surgical evacuation in lobar hemorrhages or cerebellar hemorrhages >3cm. ICU monitoring for ICP elevation; osmotherapy (mannitol/hypertonic saline) for herniation. DVT prophylaxis post-stabilization. Rehabilitation: physiotherapy, speech therapy, occupational therapy."
+  },
+  {
+    "condition": "Spine Herniated Disc / Disc Prolapse",
+    "text": "Clinical Guidelines for Herniated Intervertebral Disc: Most cases resolve with conservative management (4–6 weeks). NSAIDs (ibuprofen/naproxen) for pain. Physiotherapy: McKenzie exercises, core strengthening, postural education. Epidural steroid injections for severe radiculopathy refractory to oral therapy. Surgical referral (discectomy/microdiscectomy) for: persistent neurological deficits, bowel/bladder dysfunction (cauda equina — EMERGENCY), or failed 6+ weeks conservative therapy. Avoid bed rest; encourage gentle activity. Patient education on lifting technique and ergonomics."
+  },
+  {
+    "condition": "Second-Degree Burn / Moderate Burn",
+    "text": "Clinical Guidelines for Moderate Burns (Second-Degree): Irrigate wound with cool (not cold) running water for 20 minutes. Do not apply ice, butter, or toothpaste. Clean with mild antiseptic soap. Apply silver sulfadiazine (1%) cream or mafenide acetate and cover with sterile non-adherent dressing. Do not pop blisters — risk of infection. Daily dressing changes. Manage pain with NSAIDs (ibuprofen) or paracetamol. Ensure tetanus prophylaxis is up to date. Burns involving face, hands, feet, genitalia, or major joints require specialist burn unit referral."
+  },
+  {
+    "condition": "Finger Fracture / Bone Fracture / Orthopedic",
+    "text": "Clinical Guidelines for Fractures: Immobilize joint above and below the fracture using splint or cast. Apply RICE protocol (Rest, Ice, Compression, Elevation). Refer to orthopedics for reduction and alignment confirmation — obtain post-manipulation X-ray. Check and document neurovascular status distally (capillary refill, sensation, pulse). Analgesia: NSAIDs or opioids for severe pain. Open fractures require urgent debridement, IV antibiotics (co-amoxiclav), and tetanus prophylaxis. Physiotherapy for rehabilitation post-immobilization to restore range of motion."
+  },
+  {
+    "condition": "Conjunctivitis / Pink Eye",
+    "text": "Clinical Guidelines for Conjunctivitis: Viral (most common): Self-limiting 1–2 weeks. Cool compresses, preservative-free artificial tears. Bacterial: Antibiotic drops (Polymyxin B/Trimethoprim or chloramphenicol) for 5–7 days. Gonococcal conjunctivitis: IV ceftriaxone — urgent ophthalmology referral. Allergic: Topical antihistamines (azelastine) or mast cell stabilizers (sodium cromoglicate). Avoid contact lens wear until resolution. Hand hygiene to prevent spread. Ophthalmology referral for: dendritic ulcer (herpes), hypopyon (endophthalmitis), or vision change."
+  },
+  {
+    "condition": "Paronychia / Nail Fold Infection",
+    "text": "Clinical Guidelines for Paronychia: Acute bacterial: Warm water soaks 3–4 times daily for early/mild cases. Topical mupirocin ointment. If fluctuant abscess present: incision and drainage under local anaesthesia. Oral antibiotics (cephalexin or co-amoxiclav) if cellulitis extends beyond nail fold. Chronic paronychia: Usually Candida — topical clotrimazole + eliminate wet work exposure. Avoid nail biting and hangnail tearing. Recurrent paronychia warrants nail removal or lateral nail fold marsupialization."
+  },
+  {
+    "condition": "Pressure Ulcer / Diabetic Wound / Ulcer",
+    "text": "Clinical Guidelines for Pressure Ulcers and Chronic Wounds: Offload pressure using specialized mattresses and reposition every 2 hours. Wound bed preparation using TIME framework (Tissue debridement, Infection control, Moisture balance, Edge of wound stimulation). Clean with normal saline or wound cleanser. Select appropriate dressing based on exudate: hydrocolloid (low), alginate (high), foam (moderate). Ensure optimum nutrition: high protein (1.2–1.5g/kg/day) and vitamin C supplementation. Treat underlying conditions (glycemic control for diabetic ulcers). Escalate to wound care specialist or vascular surgeon if no improvement in 2–4 weeks."
+  },
+  {
+    "condition": "Normal Scan / Healthy",
+    "text": "Clinical Guidelines for Normal Findings: No acute pathology identified on current imaging. Reassure the patient. Correlate with clinical symptoms and patient history. Recommend routine follow-up based on age and risk factors (e.g. annual chest X-ray for heavy smokers, biennial mammogram for women >50). Advise on preventive health: balanced diet, regular physical activity (150 min/week moderate), smoking cessation, alcohol moderation, and adequate sleep. Scheduled health screenings as per national guidelines. Return precautions: advise patient to seek care if new or worsening symptoms develop."
   }
 ]

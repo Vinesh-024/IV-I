@@ -27,9 +27,9 @@ async def lifespan(app: FastAPI):
     # Shutdown actions (if any)
 
 app = FastAPI(
-    title="Intelligent Medical Image Analysis with Automated Report Generation API",
-    description="Backend API supporting image modality routing, disease classification, localization, and RAG advisory.",
-    version="1.0.0",
+    title="Intelligent Medical Image Analysis — Phase 2 API",
+    description="Clinical AI pipeline: modality routing, disease classification, localization, explainability (GradCAM), RAG advisory, and JWT authentication.",
+    version="2.0.0",
     lifespan=lifespan
 )
 
@@ -42,15 +42,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount uploads directory so frontend can load processed images
+# Mount uploads directory so frontend can load processed images, masks, and heatmaps
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
-# Import and include routers (we will create these files next)
-from app.routers import analysis, reports, chat
+# Import and include routers
+from app.routers import analysis, reports, chat, auth
 
+app.include_router(auth.router,     prefix="/api/auth",     tags=["Authentication"])
 app.include_router(analysis.router, prefix="/api/analysis", tags=["Analysis"])
-app.include_router(reports.router, prefix="/api/reports", tags=["Reports"])
-app.include_router(chat.router, prefix="/api/chat", tags=["RAG Chat"])
+app.include_router(reports.router,  prefix="/api/reports",  tags=["Reports"])
+app.include_router(chat.router,     prefix="/api/chat",     tags=["RAG Chat"])
 
 @app.get("/")
 def read_root():
